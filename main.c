@@ -27,8 +27,6 @@ LinkedNode *create_node(char *value);
 
 int remove_node(LinkedNode **head, int id);
 
-int free_mem(LinkedNode **head);
-
 int print_nodes(LinkedNode *head);
 
 // ====================== MAIN =========================
@@ -38,6 +36,15 @@ int main()
         LinkedNode *head = NULL;
         add_node(&head, "this is a test text");
         add_node(&head, "this is a test text");
+        add_node(&head, "this is a test text");
+
+        remove_node(&head, 2);
+        add_node(&head, "this is a test text");
+        add_node(&head, "this is a test text");
+        remove_node(&head, 5);
+        add_node(&head, "this is a test text");
+        add_node(&head, "this is a test text");
+
         print_nodes(head);
         return 0;
 }
@@ -48,7 +55,7 @@ int print_nodes(LinkedNode *head)
 {
         if (head->rowNum == 0)
         {
-                log("LinkedNode is empty");
+                log("[+] LinkedNode is empty");
                 return 0;
         }
 
@@ -59,17 +66,46 @@ int print_nodes(LinkedNode *head)
                 int id = currentNode->rowNum;
                 char *data = currentNode->data;
 
-                printf("Order: %d\n\t\t%s\n", id, data);
+                printf("id: %d\n\t%s\n\n", id, data);
                 currentNode = currentNode->next;
         }
         return 1;
 }
 
 // ==============================================================
-int remove_node(LinkedNode **head, int value)
+
+int remove_node(LinkedNode **head, int row)
 {
-        // TODO
-        return 1;
+
+        if (*head == NULL)
+        {
+                return 0;
+        }
+
+        LinkedNode *currentNode = *head;
+
+        if (currentNode->rowNum == row)
+        {
+                *head = currentNode->next;
+                free(currentNode);
+                return 1;
+        }
+
+        while (currentNode->next != NULL)
+        {
+                LinkedNode *nextNode = currentNode->next;
+
+                if (nextNode->rowNum == row)
+                {
+                        currentNode->next = nextNode->next;
+                        free(nextNode);
+                        log("[+] Success remove_node");
+                        return 1;
+                }
+
+                currentNode = currentNode->next;
+        }
+        return 0;
 }
 
 // ==============================================================
@@ -80,7 +116,7 @@ int add_node(LinkedNode **head, char *value)
 
         if (new_node == NULL)
         {
-                log("[!] Failed add_node\n new node is NULL");
+                log("[-] Failed add_node");
                 perror("new node is NULL");
                 return 0;
         }
@@ -98,7 +134,7 @@ LinkedNode *create_node(char *value)
 
         if (node != NULL)
         {
-                log("[+] Success create_node\n new node created successfuly");
+                log("[+] Success create_node");
                 node->rowNum = ++counter;
                 node->data = value;
         }
