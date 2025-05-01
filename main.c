@@ -45,7 +45,7 @@ int main()
         add_node(&head, "this is a test text");
         add_node(&head, "this is a test text");
 
-        print_nodes(head);
+        // print_nodes(head);
         return 0;
 }
 
@@ -55,7 +55,7 @@ int print_nodes(LinkedNode *head)
 {
         if (head->rowNum == 0)
         {
-                log("[+] LinkedNode is empty");
+                log("[OK] LinkedNode is empty");
                 return 0;
         }
 
@@ -65,7 +65,6 @@ int print_nodes(LinkedNode *head)
         {
                 int id = currentNode->rowNum;
                 char *data = currentNode->data;
-
                 printf("id: %d\n\t%s\n\n", id, data);
                 currentNode = currentNode->next;
         }
@@ -76,7 +75,6 @@ int print_nodes(LinkedNode *head)
 
 int remove_node(LinkedNode **head, int row)
 {
-
         if (*head == NULL)
         {
                 return 0;
@@ -84,6 +82,7 @@ int remove_node(LinkedNode **head, int row)
 
         LinkedNode *currentNode = *head;
 
+        // If first item is at first Head
         if (currentNode->rowNum == row)
         {
                 *head = currentNode->next;
@@ -91,6 +90,7 @@ int remove_node(LinkedNode **head, int row)
                 return 1;
         }
 
+        // If item not at first Head Node
         while (currentNode->next != NULL)
         {
                 LinkedNode *nextNode = currentNode->next;
@@ -99,7 +99,7 @@ int remove_node(LinkedNode **head, int row)
                 {
                         currentNode->next = nextNode->next;
                         free(nextNode);
-                        log("[+] Success remove_node");
+                        log("[OK] remove_node");
                         return 1;
                 }
 
@@ -116,7 +116,7 @@ int add_node(LinkedNode **head, char *value)
 
         if (new_node == NULL)
         {
-                log("[-] Failed add_node");
+                log("[ERROR] add_node");
                 perror("new node is NULL");
                 return 0;
         }
@@ -134,7 +134,7 @@ LinkedNode *create_node(char *value)
 
         if (node != NULL)
         {
-                log("[+] Success create_node");
+                log("[OK] create_node");
                 node->rowNum = ++counter;
                 node->data = value;
         }
