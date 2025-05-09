@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// ======================= MACRO =======================
+// ======================= MACRO ================================
 
 #define log(message) printf("%s\n", message)
 
-// ======================= STATIC ======================
+// ======================= STATIC ===============================
 
 static int counter = 0;
 
-// ======================= STRUCT ======================
+// ======================= STRUCT ===============================
 
 typedef struct LinkedNode
 {
@@ -19,7 +19,7 @@ typedef struct LinkedNode
 
 } LinkedNode;
 
-// ====================== PROTOTYPE ====================
+// ========================= PROTOTYPE ==========================
 
 int add_node(LinkedNode **head, char *value);
 
@@ -27,25 +27,18 @@ LinkedNode *create_node(char *value);
 
 int remove_node(LinkedNode **head, int id);
 
+int free_mem(LinkedNode **head);
+
 int print_nodes(LinkedNode *head);
 
-// ====================== MAIN =========================
+// ========================== MAIN ==============================
 
 int main()
 {
         LinkedNode *head = NULL;
         add_node(&head, "this is a test text");
         add_node(&head, "this is a test text");
-        add_node(&head, "this is a test text");
-
-        remove_node(&head, 2);
-        add_node(&head, "this is a test text");
-        add_node(&head, "this is a test text");
-        remove_node(&head, 5);
-        add_node(&head, "this is a test text");
-        add_node(&head, "this is a test text");
-
-        // print_nodes(head);
+        print_nodes(head);
         return 0;
 }
 
@@ -55,7 +48,7 @@ int print_nodes(LinkedNode *head)
 {
         if (head->rowNum == 0)
         {
-                log("[OK] LinkedNode is empty");
+                log("LinkedNode is empty");
                 return 0;
         }
 
@@ -65,46 +58,45 @@ int print_nodes(LinkedNode *head)
         {
                 int id = currentNode->rowNum;
                 char *data = currentNode->data;
-                printf("id: %d\n\t%s\n\n", id, data);
+
+                printf("Order: %d\n\t\t%s\n", id, data);
                 currentNode = currentNode->next;
         }
         return 1;
 }
 
 // ==============================================================
-
-int remove_node(LinkedNode **head, int row)
+int remove_node(LinkedNode **head, int id)
 {
-        if (*head == NULL)
+
+        if (head == NULL)
         {
                 return 0;
         }
 
         LinkedNode *currentNode = *head;
+        LinkedNode *prevNode = NULL;
 
-        // If first item is at first Head
-        if (currentNode->rowNum == row)
+        if (currentNode->rowNum == id)
         {
-                *head = currentNode->next;
+                *head = currentNode->next; // Update the head pointer
+                free(currentNode);         // Free memory
+                return 1;
+        }
+
+        while (currentNode != NULL && currentNode->rowNum != id)
+        {
+                prevNode = currentNode;
+                currentNode = currentNode->next;
+        }
+
+        if (currentNode != NULL)
+        {
+                prevNode->next = currentNode->next;
                 free(currentNode);
                 return 1;
         }
 
-        // If item not at first Head Node
-        while (currentNode->next != NULL)
-        {
-                LinkedNode *nextNode = currentNode->next;
-
-                if (nextNode->rowNum == row)
-                {
-                        currentNode->next = nextNode->next;
-                        free(nextNode);
-                        log("[OK] remove_node");
-                        return 1;
-                }
-
-                currentNode = currentNode->next;
-        }
         return 0;
 }
 
@@ -116,7 +108,7 @@ int add_node(LinkedNode **head, char *value)
 
         if (new_node == NULL)
         {
-                log("[ERROR] add_node");
+                log("[!] Failed add_node\n new node is NULL");
                 perror("new node is NULL");
                 return 0;
         }
@@ -134,7 +126,7 @@ LinkedNode *create_node(char *value)
 
         if (node != NULL)
         {
-                log("[OK] create_node");
+                log("[+] Success create_node\n new node created successfuly");
                 node->rowNum = ++counter;
                 node->data = value;
         }
